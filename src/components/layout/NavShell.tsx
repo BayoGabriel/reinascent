@@ -1,14 +1,13 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /** Fixed navbar shell — transparent over the page top on every route
  *  (`.nav-overlay` lightens its contents) and solid white once the user
- *  scrolls. Also resets the scroll position to the top on navigation. */
+ *  scrolls. Route changes scroll to the top via Next's default restoration,
+ *  which also fires the scroll listener and resets this bar. */
 export function NavShell({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -17,11 +16,6 @@ export function NavShell({ children }: { children: ReactNode }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    setScrolled(false);
-  }, [pathname]);
 
   return (
     <nav
